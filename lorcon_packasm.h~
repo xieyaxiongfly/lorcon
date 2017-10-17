@@ -165,7 +165,7 @@ int lcpa_size(struct lcpa_metapack *in_head);
 
 /* Freeze a LCPA fragment packet into a bytestream.  The caller is responsible
  * for providing a bytestream of sufficient length. */
-void lcpa_freeze(struct lcpa_metapack *in_head, unsigned char *bytes);
+void lcpa_freeze(struct lcpa_metapack *in_head, u_char *bytes);
 
 #endif
 

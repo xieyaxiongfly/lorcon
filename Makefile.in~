@@ -46,9 +46,6 @@ TXTUNOUT  = tools/tuntx
 MCSSWEEP2OBJ = tools/mcs_sweep2.o
 MCSSWEEP2OUT = tools/mcs_sweep2
 
-INJECTOROBJ = injector/injector.o
-INJECTOROUT = injector/injector
-
 all:	$(DEPEND) $(LIBOUT) 
 
 $(LIBOUT):	$(LIBOBJ)
@@ -64,9 +61,6 @@ $(TXTUNOUT):	$(TXTUNOBJ)
 $(MCSSWEEP2OUT):	$(MCSSWEEP2OBJ)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(MCSSWEEP2OUT) $(MCSSWEEP2OBJ) $(LIBS) -lorcon2 
 
-$(INJECTOROUT):	$(INJECTOROBJ)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $(INJECTOROUT) $(INJECTOROBJ) $(LIBS) -lorcon2
-
 tools:	$(LIBOUT) $(TXTUNOUT) $(L2PINGOUT) $(MCSSWEEP2OUT)
 
 install:	$(LIBOUT)
@@ -81,7 +75,7 @@ install:	$(LIBOUT)
 	install -m 644 lorcon_multi.h $(INCLUDE)/lorcon2/lorcon_multi.h
 	install -m 644 ieee80211.h $(INCLUDE)/lorcon2/lorcon_ieee80211.h
 	install -d -m 755 $(MAN)/man3
-	install -m 644 lorcon.3 $(MAN)/man3/lorcon.3
+	install -o root -m 644 lorcon.3 $(MAN)/man3/lorcon.3
 
 	$(LDCONFIG)
 
@@ -93,7 +87,6 @@ clean:
 	@-rm -f $(TXTESTOUT)
 	@-rm -f $(MCSSWEEP2OUT)
 	@-rm -f $(TXTUNOUT)
-	@-rm -f $(INJECTOROUT)
 
 distclean:
 	@-$(MAKE) clean

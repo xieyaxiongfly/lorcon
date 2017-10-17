@@ -217,7 +217,7 @@ int lcpa_size(struct lcpa_metapack *in_head) {
 	return len;
 }
 
-void lcpa_freeze(struct lcpa_metapack *in_head, unsigned char *bytes) {
+void lcpa_freeze(struct lcpa_metapack *in_head, u_char *bytes) {
 	struct lcpa_metapack *h = NULL, *i = NULL;
 	int offt = 0;
 
