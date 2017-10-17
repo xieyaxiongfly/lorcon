@@ -46,8 +46,8 @@ TXTUNOUT  = tools/tuntx
 MCSSWEEP2OBJ = tools/mcs_sweep2.o
 MCSSWEEP2OUT = tools/mcs_sweep2
 
-INJECTOROBJ = injector/injector.o
-INJECTOROUT = injector/injector
+INJECTOROBJ = tools/injector.o
+INJECTOROUT = tools/injector
 
 all:	$(DEPEND) $(LIBOUT) 
 
@@ -67,7 +67,7 @@ $(MCSSWEEP2OUT):	$(MCSSWEEP2OBJ)
 $(INJECTOROUT):	$(INJECTOROBJ)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(INJECTOROUT) $(INJECTOROBJ) $(LIBS) -lorcon2
 
-tools:	$(LIBOUT) $(TXTUNOUT) $(L2PINGOUT) $(MCSSWEEP2OUT)
+tools:	$(LIBOUT) $(TXTUNOUT) $(L2PINGOUT) $(MCSSWEEP2OUT) $(INJECTOROUT)
 
 install:	$(LIBOUT)
 	install -d -m 755 $(LIB)
