@@ -45,23 +45,23 @@
 #define PAYLOAD_LEN 64
 
 void usage(char *argv[]) {
-    printf("\t-i <interface>        Radio interface\n");
-    printf("\t-c <channel>          Channel (should be HT40)\n");
-    printf("\t-l <location #>       Arbitrary location # added to packets\n");
-    printf("\t-L <location name>    Arbitrary location name added to packets\n");
-    printf("\t-n <count>            Number of packets at each MCS to send\n");
-    printf("\t-d <delay>            Interframe delay\n");
+    	printf("\t-i <interface>        Radio interface\n");
+    	printf("\t-c <channel>          Channel (should be HT40)\n");
+    	printf("\t-l <location #>       Arbitrary location # added to packets\n");
+    	printf("\t-L <location name>    Arbitrary location name added to packets\n");
+    	printf("\t-n <count>            Number of packets at each MCS to send\n");
+    	printf("\t-d <delay>            Interframe delay\n");
 
 	printf("\nExample:\n");
 	printf("\t%s -i wlan0 -c 6HT40+ -l 1 -L 'Top Floor' -n 1000\n\n", argv[0]);
 }
 int main(int argc, char *argv[]) {
 	char *interface = NULL, *lname = NULL;
-    unsigned int lcode = 0;
-    unsigned int npackets = 100;
+    	unsigned int lcode = 0;
+    	unsigned int npackets = 100;
 
 	int c;
-    int channel, ch_flags;
+    	int channel, ch_flags;
 
 	lorcon_driver_t *drvlist, *driver;
 	lorcon_t *context;
@@ -69,31 +69,31 @@ int main(int argc, char *argv[]) {
 	lcpa_metapack_t *metapack;
 	lorcon_packet_t *txpack;
 
-    /* delay interval */
-    unsigned int interval = 1;
+    	/* delay interval */
+    	unsigned int interval = 1;
 
-    /* Iterations through HT and GI */
-    int mcs_iter = 0;
-    int ht_iter = 0;
-    int gi_iter = 0;
+    	/* Iterations through HT and GI */
+    	int mcs_iter = 0;
+    	int ht_iter = 0;
+    	int gi_iter = 0;
 	unsigned int count = 0;
 
-    unsigned int totalcount = 1;
+    	unsigned int totalcount = 1;
 
-    uint8_t *smac;
+    	uint8_t *smac;
 
-    uint8_t *bmac = "\x00\xDE\xAD\xBE\xEF\x00";
+    	uint8_t *bmac = "\x00\xDE\xAD\xBE\xEF\x00";
 
-    uint8_t encoded_payload[14];
-    uint32_t *encoded_counter = (uint32_t *) (encoded_payload + 2);
-    uint32_t *encoded_max = (uint32_t *) (encoded_payload + 6);
-    uint32_t *encoded_session = (uint32_t *) (encoded_payload + 10);
+    	uint8_t encoded_payload[14];
+    	uint32_t *encoded_counter = (uint32_t *) (encoded_payload + 2);
+    	uint32_t *encoded_max = (uint32_t *) (encoded_payload + 6);
+    	uint32_t *encoded_session = (uint32_t *) (encoded_payload + 10);
 
-    uint8_t payload[PAYLOAD_LEN];
+    	uint8_t payload[PAYLOAD_LEN];
 
 	// Timestamp
-    struct timeval time; 
-    uint64_t timestamp; 
+    	struct timeval time; 
+    	uint64_t timestamp; 
 
 	// Beacon Interval
 	int beacon_interval = 100;
@@ -101,9 +101,9 @@ int main(int argc, char *argv[]) {
 	// Capabilities
 	int capabilities = 0x0421;
 
-    // Session ID
-    uint32_t session_id;
-    FILE *urandom;
+    	// Session ID
+    	uint32_t session_id;
+    	FILE *urandom;
 
 	printf ("%s - 802.11 MCS Sweeper\n", argv[0]);
 	printf ("-----------------------------------------------------\n\n");
@@ -114,50 +114,49 @@ int main(int argc, char *argv[]) {
 				interface = strdup(optarg);
 				break;
 			case 'c':
-                if (lorcon_parse_ht_channel(optarg, &channel, &ch_flags) == 0) {
-                    printf("ERROR: Unable to parse channel\n");
-                    return -1;
-                }
+                		if (lorcon_parse_ht_channel(optarg, &channel, &ch_flags) == 0) {
+                    			printf("ERROR: Unable to parse channel\n");
+                    			return -1;
+                		}
 				break;
-            case 'l':
-                if (sscanf(optarg, "%u", &lcode) != 1) {
-                    printf("ERROR: Unable to parse location code\n");
-                    return -1;
-                }
+            		case 'l':
+                		if (sscanf(optarg, "%u", &lcode) != 1) {
+                    			printf("ERROR: Unable to parse location code\n");
+                    			return -1;
+                		}
                 
-                if (lcode > 254) {
-                    printf("ERROR: Location code must be 0-254\n");
-                    return -1;
-                }
-
-                break;
+                		if (lcode > 254) {
+                    			printf("ERROR: Location code must be 0-254\n");
+                    			return -1;
+                		}
+                		break;
                 
-            case 'L':
-                lname = strdup(optarg);
-                break;
+            		case 'L':
+                		lname = strdup(optarg);
+                		break;
 
-            case 'n':
-                if (sscanf(optarg, "%u", &npackets) != 1) {
-                    printf("ERROR: Unable to parse number of packets\n");
-                    return -1;
-                }
-                break;
+            		case 'n':
+                 		if (sscanf(optarg, "%u", &npackets) != 1) {
+                    			printf("ERROR: Unable to parse number of packets\n");
+                    			return -1;
+                		}
+                		break;
 
-            case 'd':
-                if (sscanf(optarg, "%u", &interval) != 1) {
-                    printf("ERROR: Unable to parse interframe interval\n");
-                    return -1;
-                }
-                break;
+            		case 'd':
+                		if (sscanf(optarg, "%u", &interval) != 1) {
+                    			printf("ERROR: Unable to parse interframe interval\n");
+                    			return -1;
+                		}
+                		break;
 
 			case 'h':
 				usage(argv);
-                return -1;
+                		return -1;
 				break;
 
 			default:
 				usage(argv);
-                return -1;
+                		return -1;
 				break;
 			}
 	}
@@ -167,13 +166,13 @@ int main(int argc, char *argv[]) {
 		return -1;
 	}
 
-    if ((urandom = fopen("/dev/urandom", "rb")) == NULL) {
-        printf("ERROR:  Could not open urandom for session id: %s\n", strerror(errno));
-        return -1;
-    }
+    	if ((urandom = fopen("/dev/urandom", "rb")) == NULL) {
+        	printf("ERROR:  Could not open urandom for session id: %s\n", strerror(errno));
+        	return -1;
+    	}
 
-    fread(&session_id, 4, 1, urandom);
-    fclose(urandom);
+    	fread(&session_id, 4, 1, urandom);
+    	fclose(urandom);
 
 	printf("[+] Using interface %s\n",interface);
 	
@@ -184,10 +183,10 @@ int main(int argc, char *argv[]) {
 		printf("[+]\t Driver: %s\n",driver->name);
 	}
 
-    if ((context = lorcon_create(interface, driver)) == NULL) {
-        printf("[!]\t Failed to create context");
-        return -1; 
-    }
+    	if ((context = lorcon_create(interface, driver)) == NULL) {
+        	printf("[!]\t Failed to create context");
+        	return -1; 
+    	}
 
 	// Create Monitor Mode Interface
 	if (lorcon_open_injmon(context) < 0) {
@@ -198,18 +197,18 @@ int main(int argc, char *argv[]) {
 		lorcon_free_driver_list(driver);
 	}
 
-    // Get the MAC of the radio
-    if (lorcon_get_hwmac(context, &smac) <= 0) {
-        printf("[!]\t Could not get hw mac address\n");
-        return -1;
-    }
+    	// Get the MAC of the radio
+    	if (lorcon_get_hwmac(context, &smac) <= 0) {
+        	printf("[!]\t Could not get hw mac address\n");
+        	return -1;
+    	}
 
 	// Set the channel we'll be injecting on
 	lorcon_set_ht_channel(context, channel, ch_flags);
 
 	printf("[+]\t Using channel: %d flags %d\n\n", channel, ch_flags);
 
-    printf("\n[.]\tNon-MCS Calibration\n");
+    	printf("\n[.]\tNon-MCS Calibration\n");
     for (count = 0; count < npackets; count++) {
         memset(encoded_payload, 0, 14);
 
