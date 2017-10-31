@@ -63,7 +63,8 @@ int main(int argc, char *argv[]) {
     unsigned int npackets = 100;
     unsigned int MCS = 0;
 
-    int c,i;
+    int value[6];
+    int c,i,tmp;
     int channel, ch_flags;
 
     lorcon_driver_t *drvlist, *driver;
@@ -89,7 +90,14 @@ int main(int argc, char *argv[]) {
 
     uint8_t *bmac = "\x00\xDE\xAD\xBE\xEF\x00";
 
-    uint8_t *RA_MAC = "\x04\xF0\x21\x32\xBD\xA5";
+//    uint8_t *RA_MAC = "\x04\xF0\x21\x32\xBD\xA5";
+    uint8_t RA_MAC[6];
+    RA_MAC[0] = 0x04;
+    RA_MAC[1] =0xF0;
+    RA_MAC[2] =0x21;
+    RA_MAC[3] =0x32;
+    RA_MAC[4] =0xBD;
+    RA_MAC[5] =0xA5;
     uint8_t *TA_MAC;
     uint8_t *DA_MAC = RA_MAC;
     uint8_t *BSSID_MAC = bmac;
@@ -120,10 +128,10 @@ int main(int argc, char *argv[]) {
     uint32_t session_id;
     FILE *urandom;
 
-    printf ("%s - packet injector\n", argv[0]);
+    printf ("%s - packet injector NEW!\n", argv[0]);
     printf ("-----------------------------------------------------\n\n");
 
-    while ((c = getopt(argc, argv, "hi:c:m:b:g:n:d:")) != EOF) {
+    while ((c = getopt(argc, argv, "hi:c:m:b:g:n:d:a:")) != EOF) {
 	switch (c) {
 	case 'i': 
 		interface = strdup(optarg);
@@ -139,16 +147,19 @@ int main(int argc, char *argv[]) {
 		    printf("ERROR: Unable to parse MCS idex\n");
 		    return -1;
 		}
+		break;
     	case 'b':
 		if (sscanf(optarg, "%u", &BW) != 1){
 		    printf("ERROR: Unable to parse bandwidth \n");
 		    return -1;
 		}
+		break;
 	case 'g':
 		if (sscanf(optarg, "%u", &GI) != 1){
 		    printf("ERROR: Unable to parse guard interval \n");
 		    return -1;
 		}
+		break;
     	case 'n':
 		if (sscanf(optarg, "%u", &npackets) != 1) {
 		    printf("ERROR: Unable to parse number of packets\n");
@@ -162,15 +173,31 @@ int main(int argc, char *argv[]) {
 		    return -1;
 		}
 		break;
-
+	case 'a':
+		//if (6 == sscanf(optarg, "%x:%x:%x:%x:%x:%x", &value[0],&value[1],&value[2],&value[3],&value[4],&value[5]) ){
+		tmp = sscanf(optarg, "%x:%x:%x:%x:%x:%x", &value[0],&value[1],&value[2],&value[3],&value[4],&value[5]);
+		
+		printf("Read MAC, num:%d\n",tmp);
+		if (6 == tmp ){
+			printf("Read MAC, entering loop\n");
+			for(i = 0; i < 6; i++){
+				printf("Read MAC, loop index:%d\n",i);
+				RA_MAC[i] = (uint8_t)value[i];	
+			}
+		}else{
+		    printf("ERROR: Unable to parse MAC address\n");
+		    return -1;
+		}
+		break;	
 	case 'h':
+		printf("ERROR: cannot parse the input\n");
 		usage(argv);
 		return -1;
 		break;
 
 	default:
 		usage(argv);
-	return -1;
+		return -1;
 		break;
 	}
     }
@@ -218,6 +245,7 @@ int main(int argc, char *argv[]) {
     }
 
     printf("[+]\t Using MAC: %02x:%02x:%02x:%02x:%02x:%02x \n",TA_MAC[0],TA_MAC[1],TA_MAC[2],TA_MAC[3],TA_MAC[4],TA_MAC[5]);
+    printf("[+]\t RX MAC: %02x:%02x:%02x:%02x:%02x:%02x \n",RA_MAC[0],RA_MAC[1],RA_MAC[2],RA_MAC[3],RA_MAC[4],RA_MAC[5]);
     // Set the channel we'll be injecting on
     lorcon_set_ht_channel(context, channel, ch_flags);
 
